@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "target": "es2022",
+      "module": "node16",
+      "rootDir": "src",
+      "outDir": "dist",
+      "strict": true,
+      "esModuleInterop": true,
+      "moduleResolution": "node16",
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "noImplicitReturns": true,
+      "allowSyntheticDefaultImports": true,
+      "types": ["node"],
+      "typeRoots": ["./src/types", "./node_modules/@types"]
+    },
+    "include": ["src/**/*.ts", "src/tests/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
+  }
+  
