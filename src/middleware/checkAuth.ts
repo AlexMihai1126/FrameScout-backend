@@ -5,16 +5,24 @@ export async function checkAuth(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): Promise<void> {
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith("Bearer ")) {
-    return res.status(401).json({
+    res.status(401).json({
       error: "Missing or invalid Authorization header.",
     });
+    return;
   }
 
   const idToken = authHeader.split("Bearer ")[1];
+
+  if (!idToken) {
+    res.status(401).json({
+      error: "Missing Firebase ID token.",
+    });
+    return;
+  }
 
   try {
     const decodedToken = await firebaseAuth.verifyIdToken(idToken);
@@ -23,13 +31,15 @@ export async function checkAuth(
       uid: decodedToken.uid,
       email: decodedToken.email,
       name: decodedToken.name,
-      picture: decodedToken.picture,
     };
 
     next();
-  } catch (error) {
-    return res.status(401).json({
+    return;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(401).json({
       error: "Invalid or expired Firebase ID token.",
     });
+    return;
   }
 }
