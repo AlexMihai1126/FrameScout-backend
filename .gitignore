@@ -144,3 +144,9 @@ vite.config.ts.timestamp-*
 
 # Firebase service account key
 serviceAccountKey.json
+
+# Uploads folder
+uploads/
+
+#VSCode settings
+.vscode/
