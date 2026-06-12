@@ -4,9 +4,10 @@ import path from "path";
 import logger from "./config/logger.js";
 import { connectMongoDb } from "./config/mongo.js";
 import multer from "multer";
+import mainRoutes from "./routes/main.js";
+import favoriteRoutes from "./routes/favorites.js"
+import photoRoutes from "./routes/photos.js"
 
-const UPLOAD_DIR =
-  process.env.UPLOAD_DIR || path.join(process.cwd(), "uploads");
 
 const PORT: number = Number(process.env.PORT) || 3000;
 
@@ -14,15 +15,24 @@ const modulePrefix = "[Server/Main]";
 
 const app = express();
 
-app.use(express.json());
-
-app.use("/uploads", express.static(UPLOAD_DIR));
+app.get("/favicon.ico", (_req, res) => res.status(204).end());
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((req: any, res: any, next: any) => {
   console.log(`${req.method} ${req.originalUrl}`);
   next();
 });
+
+app.use(express.json());
+
+app.use(
+  "/uploads/photo-spots",
+  express.static(path.join(process.cwd(), "uploads", "photo-spots"))
+);
+
+app.use("/api", mainRoutes);
+app.use("/api", favoriteRoutes)
+app.use("/api", photoRoutes)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, req: any, res: any, next: any) => {
