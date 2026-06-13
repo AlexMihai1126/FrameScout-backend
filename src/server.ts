@@ -7,6 +7,7 @@ import multer from "multer";
 import mainRoutes from "./routes/main.js";
 import favoriteRoutes from "./routes/favorites.js"
 import photoRoutes from "./routes/photos.js"
+import adminRoutes from "./routes/admin.js"
 
 
 const PORT: number = Number(process.env.PORT) || 3000;
@@ -33,6 +34,7 @@ app.use(
 app.use("/api", mainRoutes);
 app.use("/api", favoriteRoutes)
 app.use("/api", photoRoutes)
+app.use("/admin", adminRoutes)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, req: any, res: any, next: any) => {
