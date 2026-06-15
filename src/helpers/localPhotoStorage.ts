@@ -44,11 +44,11 @@ export async function savePhotoSpotImagesLocally(
     highResPreviewImgName
   );
 
-  const metadata = await sharp(fileBuffer).metadata();
+  const metadata = await sharp(fileBuffer, { failOn: "none" }).metadata();
 
   await fs.writeFile(originalPath, fileBuffer);
 
-  await sharp(fileBuffer)
+  await sharp(fileBuffer, { failOn: "none" })
     .rotate()
     .resize({
       width: 480,
@@ -59,7 +59,7 @@ export async function savePhotoSpotImagesLocally(
     })
     .toFile(previewPath);
 
-  await sharp(fileBuffer)
+  await sharp(fileBuffer, { failOn: "none" })
     .rotate()
     .resize({
       width: 1600,

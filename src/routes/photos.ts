@@ -17,7 +17,7 @@ import { parseOptionalNumber } from "../helpers/parseOptionalNumber.js";
 const modulePrefix = "[PhotoSpotRoutes]";
 const router = express.Router();
 
-const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+const allowedMimeTypes = ["image/jpeg", "image/png"];
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -76,7 +76,7 @@ router.post(
     if (!file) {
       return res.status(400).json({
         error:
-          "Fișier lipsă sau tip nepermis. Se acceptă doar JPG, PNG sau WEBP.",
+          "Fișier lipsă sau tip nepermis. Se acceptă doar JPG sau PNG.",
       });
     }
 
