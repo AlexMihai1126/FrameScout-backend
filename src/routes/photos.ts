@@ -10,9 +10,10 @@ import { checkAuth } from "../middleware/checkAuth.js";
 import { getBaseUrl } from "../helpers/getBaseUrl.js";
 import PhotoSpotModel from "../models/photoSpotModel.js";
 import TagModel from "../models/tagModel.js";
-import { savePhotoSpotImagesLocally } from "../helpers/localPhotoStorage.js";
+import { deletePhotoSpotImagesLocally, savePhotoSpotImagesLocally } from "../helpers/localPhotoStorage.js";
 import { uploadPhotoSpotValidator } from "../validators/uploadPhotoSpotValidator.js";
 import { parseOptionalNumber } from "../helpers/parseOptionalNumber.js";
+import FavoriteSpotModel from "../models/favoriteSpotModel.js";
 
 const modulePrefix = "[PhotoSpotRoutes]";
 const router = express.Router();
@@ -218,5 +219,55 @@ router.post(
     }
   },
 );
+
+router.delete("/photos/:photoSpotId", checkAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.user.uid;
+    const { photoSpotId } = req.params;
+
+    if (!Types.ObjectId.isValid(photoSpotId)) {
+      return res.status(400).json({
+        error: "ID fotografie invalid",
+      });
+    }
+
+    const photo = await PhotoSpotModel.findOne({
+      _id: photoSpotId,
+      uploadedByUserId: userId,
+    }).lean();
+
+    if (!photo) {
+      return res.status(404).json({
+        error: "Fotografia nu a fost găsită sau nu îți aparține",
+      });
+    }
+
+    await PhotoSpotModel.deleteOne({
+      _id: photoSpotId,
+      uploadedByUserId: userId,
+    });
+
+    await FavoriteSpotModel.deleteMany({
+      photoSpotId,
+    });
+
+    await deletePhotoSpotImagesLocally({
+      originalImgName: photo.originalImgName,
+      previewImgName: photo.previewImgName,
+      highResPreviewImgName: photo.highResPreviewImgName,
+    });
+
+    return res.json({
+      message: "Fotografia a fost ștearsă cu succes.",
+      deletedPhotoId: photoSpotId,
+    });
+  } catch (error: any) {
+    logger.error(`${modulePrefix} eroare DELETE /photos/:photoSpotId:`, error);
+
+    return res.status(500).json({
+      error: "Eroare server",
+    });
+  }
+});
 
 export default router;

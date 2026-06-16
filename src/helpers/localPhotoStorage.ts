@@ -96,7 +96,7 @@ export async function deletePhotoSpotImagesLocally(imageNames: {
 
   await Promise.allSettled(
     filenames.map((filename) =>
-      fs.unlink(path.join(PHOTO_SPOTS_UPLOAD_DIR, filename))
+      fs.unlink(path.join(PHOTO_SPOTS_UPLOAD_DIR, path.basename(filename)))
     )
   );
 }
