@@ -5,29 +5,91 @@ import TagModel from "../models/tagModel.js";
 import PhotoSpotModel from "../models/photoSpotModel.js";
 import mongoose from "mongoose";
 import { getBaseUrl } from "../helpers/getBaseUrl.js";
+import { getPhotosValidator } from "../validators/getPhotosValidator.js";
+import { matchedData, validationResult } from "express-validator";
+import { optionalAuth } from "../middleware/optionalAuth.js";
 
 const modulePrefix = "[MainRoutes]";
 const router = express.Router();
 
-router.get("/photos", async (req: any, res: any) => {
+router.get("/photos", optionalAuth, getPhotosValidator, async (req: any, res: any) => {
   try {
-    const page = Math.max(parseInt(req.query.page as string) || 1, 1);
-    const limit = Math.min(
-      Math.max(parseInt(req.query.limit as string) || 20, 1),
-      50
-    );
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+
+    const {
+      page = 1,
+      limit = 20,
+      q = "",
+      tagIds = [],
+      matchAllTags = true,
+      latestFirst = true,
+      mine = false
+    } = matchedData(req, {
+      locations: ["query"],
+      includeOptionals: true,
+    }) as {
+      page?: number;
+      limit?: number;
+      q?: string;
+      tagIds?: string[];
+      matchAllTags?: boolean;
+      latestFirst?: boolean;
+      mine? : boolean;
+    };
+
+    const userId = req.user?.uid;
+
+    const filter: any = {};
+
+    if (mine) {
+        if (!userId) {
+          return res.status(401).json({
+            error: "Trebuie să fii autentificat pentru a vedea fotografiile tale",
+          });
+        }
+
+        filter.uploadedByUserId = userId;
+      }
 
     const skip = (page - 1) * limit;
 
+    if (q.length > 0) {
+      const regex = new RegExp(q, "i");
+
+      filter.$or = [
+        { title: regex },
+        { description: regex },
+        { city: regex },
+        { county: regex },
+        { country: regex },
+      ];
+    }
+
+    if (tagIds.length > 0) {
+      const tagObjectIds = tagIds.map(
+        (id) => new mongoose.Types.ObjectId(id)
+      );
+
+      filter.tags = matchAllTags
+        ? { $all: tagObjectIds }
+        : { $in: tagObjectIds };
+    }
+
     const [photosRes, total] = await Promise.all([
-      PhotoSpotModel.find({})
-        .sort({ createdAt: -1 })
+      PhotoSpotModel.find(filter)
+        .sort({ createdAt: latestFirst ? -1 : 1 })
         .skip(skip)
         .limit(limit)
         .populate("tags")
         .lean(),
 
-      PhotoSpotModel.countDocuments({}),
+      PhotoSpotModel.countDocuments(filter),
     ]);
 
     const baseUrl = getBaseUrl(req);
