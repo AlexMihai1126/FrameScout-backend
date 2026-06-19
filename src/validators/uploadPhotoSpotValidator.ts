@@ -8,8 +8,7 @@ export const uploadPhotoSpotValidator = [
     .isString()
     .isLength({ min: 1, max: 80 })
     .withMessage("Titlul trebuie să aibă între 1 și 80 de caractere.")
-    .trim()
-    .escape(),
+    .trim(),
 
   body("description")
     .optional({ nullable: true, checkFalsy: true })
@@ -17,24 +16,21 @@ export const uploadPhotoSpotValidator = [
     .withMessage("Descrierea trebuie să fie text.")
     .isLength({ max: 500 })
     .withMessage("Lungimea maximă a descrierii este de 500 de caractere.")
-    .trim()
-    .escape(),
+    .trim(),
 
   body("city")
     .optional({ nullable: true, checkFalsy: true })
     .isString()
     .isLength({ max: 80 })
     .withMessage("Orașul trebuie să aibă maxim 80 de caractere.")
-    .trim()
-    .escape(),
+    .trim(),
 
   body("county")
     .optional({ nullable: true, checkFalsy: true })
     .isString()
     .isLength({ max: 80 })
     .withMessage("Județul trebuie să aibă maxim 80 de caractere.")
-    .trim()
-    .escape(),
+    .trim(),
 
   body("country")
     .exists()
@@ -43,8 +39,7 @@ export const uploadPhotoSpotValidator = [
     .isString()
     .isLength({ min: 1, max: 80 })
     .withMessage("Țara trebuie să aibă între 1 și 80 de caractere.")
-    .trim()
-    .escape(),
+    .trim(),
 
   body("latitude")
     .optional({ nullable: true, checkFalsy: true })
