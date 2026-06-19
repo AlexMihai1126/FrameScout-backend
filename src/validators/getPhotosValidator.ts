@@ -1,9 +1,6 @@
 import { query } from "express-validator";
 import mongoose from "mongoose";
 
-const escapeRegex = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
 export const getPhotosValidator = [
   query("page")
     .optional()
@@ -22,8 +19,7 @@ export const getPhotosValidator = [
     .isString()
     .trim()
     .isLength({ max: 100 })
-    .withMessage("Textul de căutare este prea lung.")
-    .customSanitizer((value) => escapeRegex(value)),
+    .withMessage("Textul de căutare este prea lung."),
 
   query("tagIds")
     .optional()
@@ -48,6 +44,12 @@ export const getPhotosValidator = [
     .optional()
     .isBoolean()
     .withMessage("latestFirst trebuie să fie true sau false.")
+    .toBoolean(),
+    
+    query("includeIsMine")
+    .optional()
+    .isBoolean()
+    .withMessage("includeIsMine trebuie să fie true sau false.")
     .toBoolean(),
   
   query("mine")

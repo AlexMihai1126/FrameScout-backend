@@ -5,10 +5,9 @@ import logger from "./config/logger.js";
 import { connectMongoDb } from "./config/mongo.js";
 import multer from "multer";
 import mainRoutes from "./routes/main.js";
-import favoriteRoutes from "./routes/favorites.js"
-import photoRoutes from "./routes/photos.js"
-import adminRoutes from "./routes/admin.js"
-
+import favoriteRoutes from "./routes/favorites.js";
+import photoRoutes from "./routes/photos.js";
+import adminRoutes from "./routes/admin.js";
 
 const PORT: number = Number(process.env.PORT) || 3000;
 
@@ -28,13 +27,13 @@ app.use(express.json());
 
 app.use(
   "/uploads/photo-spots",
-  express.static(path.join(process.cwd(), "uploads", "photo-spots"))
+  express.static(path.join(process.cwd(), "uploads", "photo-spots")),
 );
 
 app.use("/api", mainRoutes);
-app.use("/api", favoriteRoutes)
-app.use("/api", photoRoutes)
-app.use("/admin", adminRoutes)
+app.use("/api", favoriteRoutes);
+app.use("/api", photoRoutes);
+app.use("/admin", adminRoutes);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, req: any, res: any, next: any) => {
@@ -62,7 +61,6 @@ async function startup() {
       logger.info(`${modulePrefix} API pornit, port ${PORT}`);
       console.log(`${modulePrefix} Serverul a pornit, port: ${PORT}.`);
     });
-
   } catch (error) {
     logger.error(`${modulePrefix} Eroare la inițializare:`, error);
     console.error(

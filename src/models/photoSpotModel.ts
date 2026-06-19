@@ -1,15 +1,24 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { ITag } from "./tagModel.js";
+import normalizeText  from "../helpers/normalizeText.js";
 
 export interface IPhotoSpot extends Document {
   _id: Types.ObjectId;
 
   title: string;
+  normalizedTitle: string;
+
   description?: string;
+  normalizedDescription: string;
 
   city?: string;
+  normalizedCity: string;
+
   county?: string;
+  normalizedCounty: string;
+
   country: string;
+  normalizedCountry: string;
 
   latitude?: number;
   longitude?: number;
@@ -41,6 +50,14 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
       required: true,
       trim: true,
       maxlength: 80,
+    },
+
+    normalizedTitle: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 80,
+      default: "",
       index: true,
     },
 
@@ -51,11 +68,25 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
       required: false,
     },
 
+    normalizedDescription: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: "",
+    },
+
     city: {
       type: String,
       trim: true,
       maxlength: 80,
       required: false,
+    },
+
+    normalizedCity: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: "",
       index: true,
     },
 
@@ -64,6 +95,13 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
       trim: true,
       maxlength: 80,
       required: false,
+    },
+
+    normalizedCounty: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: "",
       index: true,
     },
 
@@ -72,6 +110,14 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
       trim: true,
       maxlength: 80,
       required: true,
+    },
+
+    normalizedCountry: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      required: true,
+      default: "",
       index: true,
     },
 
@@ -157,6 +203,14 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
     timestamps: true,
   },
 );
+
+PhotoSpotSchema.pre("save", function () {
+  this.normalizedTitle = normalizeText(this.title);
+  this.normalizedDescription = normalizeText(this.description);
+  this.normalizedCity = normalizeText(this.city);
+  this.normalizedCounty = normalizeText(this.county);
+  this.normalizedCountry = normalizeText(this.country);
+});
 
 PhotoSpotSchema.index({
   title: "text",
