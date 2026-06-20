@@ -4,7 +4,7 @@ This repository contains the production REST API for the **FrameScout** ecosyste
 
 ---
 
-## 🚀 How to Start (Docker Ecosystem)
+## How to Start (Docker Ecosystem)
 
 The entire environment (Node.js API + MongoDB Database Container) is fully dockerized and ready for local development.
 
@@ -90,7 +90,7 @@ Generated image variants:
 
 ---
 
-## 💾 Database Schemas (MongoDB)
+## Database Schemas (MongoDB)
 
 The application uses three main collections inside the `framescout` database.
 
@@ -192,9 +192,9 @@ Prevents duplicate favorites caused by repeated user actions.
 
 ---
 
-## 🛣️ API Endpoints
+## API Endpoints
 
-### 🌍 Public Endpoints
+### Public Endpoints
 
 #### GET /api/photos
 
@@ -244,7 +244,7 @@ Returns all available category tags sorted alphabetically.
 
 ---
 
-## 🔐 Authenticated Endpoints
+## Authenticated Endpoints
 
 All routes below require a valid Firebase ID Token.
 
@@ -319,7 +319,7 @@ Newest favorites first
 
 ---
 
-## ⚡ Admin Endpoints
+## Admin Endpoints
 
 ### POST /admin/tags
 
@@ -345,7 +345,7 @@ This allows fast bulk insertion while continuing execution when duplicate key er
 
 ---
 
-## 📦 Core Features
+## Core Features
 
 - Firebase Authentication
 - MongoDB Text Search
