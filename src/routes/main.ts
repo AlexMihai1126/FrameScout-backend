@@ -91,9 +91,14 @@ router.get(
           : { $in: tagObjectIds };
       }
 
+      const sortDirection = latestFirst ? -1 : 1;
+
       const [photosRes, total] = await Promise.all([
         PhotoSpotModel.find(filter)
-          .sort({ createdAt: latestFirst ? -1 : 1 })
+          .sort({ 
+            createdAt: sortDirection,
+            _id: sortDirection
+           })
           .skip(skip)
           .limit(limit)
           .populate("tags")
