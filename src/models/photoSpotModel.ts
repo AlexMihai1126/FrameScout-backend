@@ -57,7 +57,6 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
       required: true,
       trim: true,
       maxlength: 80,
-      default: "",
       index: true,
     },
 
@@ -117,7 +116,6 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
       trim: true,
       maxlength: 80,
       required: true,
-      default: "",
       index: true,
     },
 
@@ -204,7 +202,7 @@ const PhotoSpotSchema = new Schema<IPhotoSpot>(
   },
 );
 
-PhotoSpotSchema.pre("save", function () {
+PhotoSpotSchema.pre("validate", function () {
   this.normalizedTitle = normalizeText(this.title);
   this.normalizedDescription = normalizeText(this.description);
   this.normalizedCity = normalizeText(this.city);
