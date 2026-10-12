@@ -21,7 +21,7 @@ services:
         condition: service_healthy
   
   mongodb:
-    image: mongo:8.0
+    image: mongo:8.0.32
     environment:
       - MONGO_INITDB_DATABASE=framescout
       - MONGO_INITDB_ROOT_PASSWORD=fs-1234
